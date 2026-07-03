@@ -1,8 +1,21 @@
-# SLAM-Capable Autonomous Rover
+# SLAM Rover — Open-Source Design Package
 
-A rover that autonomously maps a room using LIDAR + ROS2. Built as a portfolio piece for mechatronics/robotics internships.
+A complete, buildable design for a budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Published as a reference design — everything needed to build one lives in this repo.
 
-> **Status (July 2026):** Design phase complete — architecture, risk analysis, CAD (chassis printed), firmware (simulation-tested 9/9), and dev environment done. Hardware build on hold; design docs and code are reusable as-is.
+**What's here and how far it's been validated:**
+- **Firmware** (MicroPython, Pico W): motor control, PIO quadrature encoders, WiFi/USB command protocol with fail-safe watchdog — validated 9/9 in a [host-side simulation harness](pico/host_test/run_sim.py)
+- **CAD**: parametric chassis system — plate, motor clamps, and tolerance test coupon (Onshape); wheels, caster spacer, and body shell (OpenSCAD, sources included) — structural parts printed and dry-fitted on a Bambu P1S
+- **Engineering docs**: [decision log](docs/decisions.md) (D1–D9), [risk register](docs/risks.md) (R1–R10), [staged BOM](docs/shopping-list.md), [build roadmap](docs/roadmap.md), [debugging log](docs/debugging-log.md)
+- Hardware bring-up (motors/lidar/SLAM on the physical robot) is designed and documented but not yet executed — the [phase 1 guide](docs/phase1-guide.md) is the runbook for whoever does it first
+
+## Gallery
+
+| | | |
+|---|---|---|
+| ![chassis plate](cad/img/chassis-plate.png) | ![motor clamp](cad/img/motor-clamp.png) | ![body shell](cad/img/body-shell.png) |
+| Chassis plate (34-hole grid system) | Motor clamp (N20, no-fastener tunnel) | Body shell (printable car-body skin) |
+| ![wheel](cad/img/wheel.png) | ![test coupon](cad/img/test-fit-coupon.png) | ![caster spacer](cad/img/caster-spacer.png) |
+| Drive wheel (rubber-band tires, D-bore) | Tolerance test coupon | Parametric caster spacer |
 
 ## Hardware
 
