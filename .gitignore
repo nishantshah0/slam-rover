@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.vscode/
+# never commit real WiFi credentials — keep them only on the Pico
+secrets.py
