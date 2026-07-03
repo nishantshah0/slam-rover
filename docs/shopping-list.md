@@ -22,7 +22,7 @@ can tolerate 2–4 week shipping — fine for Stage 3, risky for Stage 1.
 |---|---|---|---|
 | Raspberry Pi **Pico WH** | WiFi + headers pre-soldered | $13 | The robot's brainstem. The "W" ($3 extra) buys **wireless WASD driving** in Phase 1 — no cable dragging behind the rover |
 | 2× **N20 gearmotors with encoders** | 6 V, ~200–300 RPM, quadrature hall encoder | $30 | The non-negotiable item (risk R1). Sold as modules with cables pre-attached — **no soldering needed** |
-| Cytron **MDD3A** motor driver | dual 3 A, screw terminals | $15 | Screw terminals = no soldering here either |
+| **SparkFun TB6612FNG "with Headers"** motor driver | dual 1.2 A, headers PRE-soldered | $20 | Swapped from MDD3A (not sold on Amazon.ca). Pushes into the breadboard; motor cable's dupont ends push onto its pins. Wiring note: tie STBY+PWMA+PWMB to 3V3 and the firmware works unchanged (D6) |
 | 2× wheels for N20 shafts (3 mm D-shaft) | 34–43 mm | $8 | Or print hubs + rubber-band/O-ring tires on the P1S — $0 |
 | Ball caster | ~12 mm | $5 | The third wheel |
 | 6×AA battery holder + NiMH AAs + charger | ~7.2 V pack | $40 | Start with alkalines ($8) if needed; NiMH later |

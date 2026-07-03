@@ -74,14 +74,15 @@ motor in either direction (that's reverse).
 
 | From | To |
 |---|---|
-| Battery + / − | MDD3A power screw terminals (multimeter-check polarity FIRST) |
-| Motor 1 red/black | MDD3A M1A / M1B screw terminals |
-| MDD3A M1A input pin | Pico GP2 (dupont) |
-| MDD3A M1B input pin | Pico GP3 (dupont) |
-| MDD3A GND pin | Pico GND (dupont) ← **the common ground** |
+| Battery + / − | breadboard power rails (multimeter-check polarity FIRST) |
+| TB6612 VM | battery + rail; TB6612 GND → battery − rail |
+| TB6612 VCC, **STBY, PWMA, PWMB** | all → Pico 3V3 (the tie-high trick, D6) |
+| Motor 1 M+/M− (dupont ends of its cable) | TB6612 AO1 / AO2 pins |
+| TB6612 AIN1 / AIN2 | Pico GP2 / GP3 (dupont) |
+| Pico GND | battery − rail ← **the common ground** |
 
-The MDD3A logic per motor: PWM on the A pin → forward, PWM on the B pin →
-reverse, both low → stop.
+The logic per motor (with PWMA/B tied high): PWM on IN1 → forward, PWM on
+IN2 → reverse, both low → stop — identical to what the firmware expects.
 
 **Code ladder (each ~10 lines, run from Thonny):** motor full speed → motor
 at 30/60/90% duty (see PWM become "speed") → reverse → a `set_motor(speed)`

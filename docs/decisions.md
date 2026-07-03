@@ -81,14 +81,24 @@ strong, low-risk prints).
 Fallback if chassis design stalls Phase 1 by more than a few days: Pololu
 Romi chassis kit + encoder pair (~$55 CAD) drops in with the same electronics.
 
-## D6 — Motor driver: TB6612FNG or Cytron, not L298N (proposed)
+## D6 — Motor driver: SparkFun TB6612FNG (with headers), not L298N (decided)
 
-**Status:** Proposed.
+**Status:** Decided 2026-07-02 (was: TB6612 or Cytron MDD3A; MDD3A isn't sold
+on Amazon.ca and RobotShop had it out of stock, so TB6612 it is).
 
 The tutorial-favorite L298N drops 2–4 V as heat (old Darlington design) — 6 V
-motors would see ~3.5 V and crawl (risk R5). Use a modern MOSFET driver:
-**TB6612FNG** (cheap, dual channel, ~1 A/ch) or **Cytron MDD3A/MDD10A** (more
-current headroom, simplest wiring). Buy a spare.
+motors would see ~3.5 V and crawl (risk R5). The **SparkFun TB6612FNG "with
+Headers"** version keeps the no-solder rule: it pushes into the breadboard.
+
+Specs check: VM up to 15 V (our 7.2–8.4 V pack ✓), 1.2 A/channel continuous /
+3.2 A peak (N20 stall ~0.5–1 A ✓, brief stalls covered by peak rating).
+
+**Wiring trick that keeps the firmware unchanged:** the TB6612 normally wants
+3 pins per motor (IN1, IN2, PWM). Instead, tie **STBY, PWMA, PWMB all to
+3V3** (always-on), and PWM the IN pins directly — GP2/GP3 → AIN1/AIN2,
+GP4/GP5 → BIN1/BIN2. That reproduces the MDD3A's sign-magnitude behavior
+exactly, so `main.py` needs zero changes. VCC (logic) → 3V3, VM → battery +,
+grounds common.
 
 ## D7 — Power architecture: two rails, one battery (proposed)
 
