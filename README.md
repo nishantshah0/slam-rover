@@ -2,6 +2,8 @@
 
 A rover that autonomously maps a room using LIDAR + ROS2. Built as a portfolio piece for mechatronics/robotics internships.
 
+> **Status (July 2026):** Design phase complete — architecture, risk analysis, CAD (chassis printed), firmware (simulation-tested 9/9), and dev environment done. Hardware build on hold; design docs and code are reusable as-is.
+
 ## Hardware
 
 | Component | Choice | Rationale | Status |
