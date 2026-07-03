@@ -42,7 +42,7 @@ beats having a working rover you can't explain.
 screen over the network), WSL2 (a real Linux inside Windows), git push/pull.
 
 **Milestone ladder:**
-- [ ] Order **Stage 1** of the [shopping list](shopping-list.md) (~$150)
+- [ ] Order **Stage 1** of the [shopping list](shopping-list.md) (~$165)
 - [x] WSL2 + Ubuntu 24.04 installed on this PC *(2026-07-02)*
 - [x] ROS2 Jazzy installed in WSL2; talker/listener test passed ← *first ROS2 moment: done* *(2026-07-02)*
 - [x] GitHub repo created and pushed: https://github.com/nishantshah0/slam-rover *(2026-07-02)*

@@ -1,10 +1,10 @@
-# Shopping List — Staged Purchases (~$130 CAD at a time)
+# Shopping List — Staged Purchases (~$90–165 CAD at a time)
 
 Rebuilt for reality: first project, no existing gear except a **Bambu Lab P1S
 3D printer**, budget-sensitive. Two big changes from v1:
 
 1. **You buy in three stages matched to the build phases** — never more than
-   ~$140 CAD at once, and each stage only gets bought if the previous one
+   ~$165 CAD at once, and each stage only gets bought if the previous one
    succeeded. Total exposure at any moment stays low.
 2. **The P1S replaces the store-bought chassis** (decision D5 updated). You
    print the chassis plate, motor mounts, lidar mast, and wheels — which cuts
@@ -16,7 +16,7 @@ can tolerate 2–4 week shipping — fine for Stage 3, risky for Stage 1.
 
 ---
 
-## Stage 1 — Buy now (~$150): everything for Phase 1, a complete driving robot
+## Stage 1 — Buy now (~$165): everything for Phase 1, a complete driving robot
 
 | Item | Spec | ~CAD | Notes |
 |---|---|---|---|
@@ -29,12 +29,14 @@ can tolerate 2–4 week shipping — fine for Stage 3, risky for Stage 1.
 | Jumper wires + mini breadboard | dupont M/M, M/F | $15 | Phase 1 prototyping |
 | Multimeter | any $15–20 unit | $18 | The one tool that isn't optional |
 | 5 V / **5 A** buck converter | **with screw terminals** | $12 | Moved here from Stage 2: powers the Pico for untethered WiFi driving; later becomes the Pi's battery rail (D7) |
+| M3 screw + nut assortment kit | M3 × 8/10/12/16 mix | $10 | Bolts clamps to plate, caster to plate — the printed parts are useless without these |
+| Zip ties, small (2.5 mm wide) | 100-pack | $5 | Wire management through the plate's slots |
 | Chassis plate, motor mounts | — | **$0** | **Printed on the P1S** — designed in Phase 1, CAD portfolio material |
 
-**Stage 1 total: ~$150.** Deliverable: a keyboard-drivable robot with
+**Stage 1 total: ~$165.** Deliverable: a keyboard-drivable robot with
 encoder odometry and fail-safe firmware. *This is a complete standalone
 project* — if you build it and hate the process (you won't), you've risked
-$150, not $600.
+$165, not $600.
 
 ## Stage 2 — Buy ~week 2 (~$130): the ROS2 brain, for Phase 2
 
@@ -64,10 +66,10 @@ Lidar mast/mount: **printed on the P1S, $0.**
 
 | | CAD |
 |---|---|
-| Stage 1 (driving robot) | ~$150 |
+| Stage 1 (driving robot) | ~$165 |
 | Stage 2 (ROS2 brain) | ~$85–120 |
 | Stage 3 (lidar) | ~$90–140 |
-| **Full SLAM rover, total** | **~$325–410, spread over ~4 weeks** |
+| **Full SLAM rover, total** | **~$340–425, spread over ~4 weeks** |
 
 For calibration: a TurtleBot 4 Lite — the commercial version of this exact
 robot — is **~$1,600 CAD**. And unlike a bought robot, *building* it is the

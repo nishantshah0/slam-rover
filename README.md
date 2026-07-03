@@ -14,7 +14,7 @@ A rover that autonomously maps a room using LIDAR + ROS2. Built as a portfolio p
 | Motor driver | TB6612FNG or Cytron MDD3A (**not L298N**) | L298N wastes 2–4 V as heat ([D6](docs/decisions.md)) | Proposed |
 | Power | Battery → motor rail + separate 5V/5A buck → Pi | Shared rail = brownout reboots ([D7](docs/decisions.md)) | Proposed |
 
-3D printing (Bambu P1S) covers all *structure*: chassis plate, motor mounts, wheel hubs, lidar mast, Pi/Pico tray. Drivetrain internals (motors, gears, caster) stay off-the-shelf. Budget: **~$325–410 CAD total, bought in three stages of ~$90–150** ([shopping-list.md](docs/shopping-list.md)).
+3D printing (Bambu P1S) covers all *structure*: chassis plate, motor mounts, wheel hubs, lidar mast, Pi/Pico tray. Drivetrain internals (motors, gears, caster) stay off-the-shelf. Budget: **~$340–425 CAD total, bought in three stages of ~$90–165** ([shopping-list.md](docs/shopping-list.md)).
 
 ## Software Stack
 
@@ -51,7 +51,7 @@ Nav2 for point-to-point autonomous navigation. Prep item: closed-loop wheel velo
 docs/
   roadmap.md         # Beginner roadmap: milestone ladders, concepts, definitions of done
   phase1-guide.md    # Full Phase 1 execution plan: wiring, firmware steps, pin map
-  shopping-list.md   # Staged cart (~$325–410 CAD total, 3 purchases)
+  shopping-list.md   # Staged cart (~$340–425 CAD total, 3 purchases)
   debugging-log.md   # Running log: what broke, why, how it was fixed
   decisions.md       # Design decisions D1–D9 with rationale
   risks.md           # Known failure modes R1–R10 and mitigations

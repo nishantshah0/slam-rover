@@ -16,7 +16,7 @@ learning ROS2 at the same time).
 
 ## Step 0 — Order + while-the-box-ships (Days 1–3)
 
-**0.1 Order the Stage 1 cart** ([shopping-list.md](shopping-list.md), ~$150).
+**0.1 Order the Stage 1 cart** ([shopping-list.md](shopping-list.md), ~$165).
 Get the 6×AA holder **with a built-in switch** — that's your power switch.
 
 **0.2 Install Thonny** (thonny.org) — a beginner Python IDE that talks to the
