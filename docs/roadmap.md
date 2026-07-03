@@ -45,7 +45,7 @@ screen over the network), WSL2 (a real Linux inside Windows), git push/pull.
 - [ ] Order **Stage 1** of the [shopping list](shopping-list.md) (~$150)
 - [x] WSL2 + Ubuntu 24.04 installed on this PC *(2026-07-02)*
 - [x] ROS2 Jazzy installed in WSL2; talker/listener test passed ← *first ROS2 moment: done* *(2026-07-02)*
-- [ ] GitHub repo created (`slam-rover` or similar), this docs folder pushed
+- [x] GitHub repo created and pushed: https://github.com/nishantshah0/slam-rover *(2026-07-02)*
 - [ ] (moves to ~week 2, when the Stage 2 box arrives) Pi flashed with Ubuntu Server 24.04, SSH from Windows works
 
 **Definition of done:** Stage 1 is ordered and you've seen two ROS2 nodes talk to each other in WSL2.
