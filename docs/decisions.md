@@ -11,7 +11,7 @@ The original plan said ROS2 Humble, but Humble requires **Ubuntu 22.04**, and
 Ubuntu 22.04 **does not support the Raspberry Pi 5** (Pi 5 needs 23.10+).
 
 Options:
-1. **ROS2 Jazzy on Ubuntu 24.04** ← recommended. Pi 5 officially supported,
+1. **ROS2 Jazzy on Ubuntu 24.04** ← going with this. Pi 5 officially supported,
    Jazzy is an LTS (supported to 2029), slam_toolbox and Nav2 both fully
    supported. Humble tutorials translate almost 1:1 (swap "humble"→"jazzy").
 2. Humble in Docker on Raspberry Pi OS — works, but adds container complexity
@@ -70,7 +70,7 @@ Two constraints drove the original "buy a kit" call and both still hold
    turn, corrupting rotation odometry. → **2-wheel differential drive +
    caster** (the TurtleBot shape).
 
-What changed: the owner has a **Bambu Lab P1S**, so the chassis *plate*,
+What changed: I have a **Bambu Lab P1S**, so the chassis *plate*,
 motor mounts, wheel hubs, and lidar mast are **printed, not bought** — saves
 ~$40 and adds CAD design work (Onshape, free for students) to the portfolio,
 which mechatronics recruiters value as much as code. The original plan's

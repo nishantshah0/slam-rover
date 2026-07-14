@@ -1,8 +1,8 @@
-# Chassis Design Spec — What You'll Model in Onshape
+# Chassis Design Spec — What Gets Modeled in Onshape
 
-You model this yourself (that's the point — "designed the chassis in CAD" is
-your interview line, and I'll walk you through every sketch live). This doc is
-the *engineering spec*: dimensions, layout logic, and the print plan.
+Modeled from scratch, no downloaded parts (that's the point — "designed the
+chassis in CAD" is the interview line). This doc is the *engineering spec*:
+dimensions, layout logic, and the print plan.
 
 ⚠️ All part dimensions marked **nominal** are typical for these components but
 vary by listing — final-check them with calipers/ruler when parts arrive.
@@ -78,7 +78,7 @@ One sketch + one extrude + hole patterns:
 **4. Caster spacer.** Cylinder/block to make the caster stack 22 mm. Measure
 the real caster first.
 
-## Onshape session plan (~2–3 hrs total, we do it together)
+## Onshape session plan (~2–3 hrs total)
 
 1. Free **student account** at onshape.com/edu (browser, nothing to install).
 2. Learn exactly four tools — Sketch, Extrude, Hole/circle, Fillet — that's

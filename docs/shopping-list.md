@@ -77,7 +77,7 @@ thing internship interviews actually ask about.
 
 ## What the P1S contributes (all $0, all portfolio)
 
-- Chassis plate + motor mounts (Phase 1 — designed in CAD with my help; Onshape is free for students)
+- Chassis plate + motor mounts (Phase 1 — designed in Onshape, free for students)
 - Wheel hubs if you skip bought wheels
 - Pi/Pico/driver mounting tray
 - Lidar mast (Phase 2/3)

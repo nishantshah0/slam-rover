@@ -23,7 +23,7 @@ Get the 6×AA holder **with a built-in switch** — that's your power switch.
 Pico natively. This is your firmware cockpit for all of Phase 1.
 
 **0.3 Chassis CAD.** Make a free student **Onshape** account
-(runs in the browser, nothing to install). We design together:
+(runs in the browser, nothing to install). Design targets:
 
 - **Plate:** ~160 × 120 mm, 4–5 mm thick. Fits the P1S bed easily.
 - **Layout:** two N20s on the *center line* (left/right edges), caster at the
@@ -31,9 +31,9 @@ Pico natively. This is your firmware cockpit for all of Phase 1.
   stable + honest odometry), breadboard + MDD3A + buck on top with room to spare.
 - **Motor mounts:** N20s are a standard brick shape (~12×10×26 mm + gearbox);
   printed C-clamp mounts with M2 screw holes (or snap-fit) — proven pattern,
-  we'll model it in one session.
-- **Print settings:** PLA is fine, 4 walls, 30% infill, no supports needed if
-  we design flat-side-down (we will).
+  one modeling session.
+- **Print settings:** PLA is fine, 4 walls, 30% infill, no supports needed —
+  everything is designed flat-side-down.
 
 Design time budget: 2–3 hours across a couple of evenings. **This is CAD
 portfolio material — export nice screenshots as you go.**
@@ -104,8 +104,8 @@ screw terminals. Everyone does this. Log it anyway.
 the motor shaft, producing two pulse streams (A and B) offset by a quarter
 cycle — **quadrature**. Count edges = distance; whether A leads B or B leads A
 = direction. And **PIO**: the Pico's little hardware co-processors that count
-these pulses in hardware so Python never misses one at speed (risk R7). I'll
-provide the PIO quadrature program and we'll walk through what each line does.
+these pulses in hardware so Python never misses one at speed (risk R7). The
+PIO quadrature program lives in `pico/encoder.py` — worth reading line by line.
 
 **Wiring per encoder:** VCC → Pico 3V3, GND → GND, A/B → GP6/GP7 (left).
 
@@ -131,7 +131,7 @@ PC → Pico:   M <left> <right>      speeds −100…100, e.g. "M 60 60"
 Pico → PC:   E <left_count> <right_count>    streamed at 20 Hz
 ```
 
-Firmware structure (we write it together, ~60 lines): read a line → parse →
+Firmware structure (~60 lines): read a line → parse →
 set motors → every 50 ms send encoder counts → **and a watchdog: if no valid
 `M` command has arrived in 400 ms, stop both motors** (risk R4).
 
@@ -144,7 +144,7 @@ interview line.
 
 ## Step 5 — Assembly on your printed chassis (Weekend, ~3 hours)
 
-Print the final plate + mounts (revised with anything the bench taught us).
+Print the final plate + mounts (revised with anything the bench testing turned up).
 Mount: motors in their printed clamps, wheels on shafts, caster, battery
 holder (velcro or screws), breadboard + MDD3A + buck on standoffs or foam
 tape. Wire it — same circuit as the bench, just tidier: power wires twisted,
@@ -168,7 +168,7 @@ Why the Pico **W**: it has WiFi, so teleop needs no cable and no extra parts.
 2. Pico listens for UDP packets carrying the same `M <l> <r>` commands.
    **The watchdog doesn't care whether commands arrive by USB or WiFi — walk
    out of range and the rover stops.** Same fail-safe, zero new safety code.
-3. On the PC: a small Python script (I provide it, we dissect it) — hold
+3. On the PC: a small Python script (`teleop/teleop_wasd.py`) — hold
    W/A/S/D → sends commands at 10 Hz; release → sends stop.
 
 First drive: rover on the floor, slow speed cap, thumb hovering over the

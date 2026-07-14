@@ -24,13 +24,11 @@ the ladder.
 
 ## Working pattern
 
-For every new topic the pattern is: **concept first, then code, then test,
-then log.** I explain what a thing *is* and why it exists before we write any
-of it; we write code in small pieces you can run immediately; you tell me what
-the hardware actually did (I can't see it — your observations are the sensor);
-when we fix something, we log it. Ask "why" as often as you want — for an
-internship interview, understanding *why* the tf tree is shaped the way it is
-beats having a working rover you can't explain.
+For every new topic: **concept first, then code, then test, then log.**
+Understand what a thing *is* and why it exists before writing any of it;
+write code in small pieces that run immediately; every fix gets logged.
+Keep asking "why" — for an internship interview, understanding *why* the
+tf tree is shaped the way it is beats having a working rover I can't explain.
 
 ---
 
@@ -51,7 +49,7 @@ screen over the network), WSL2 (a real Linux inside Windows), git push/pull.
 **Definition of done:** Stage 1 is ordered and you've seen two ROS2 nodes talk to each other in WSL2.
 
 **Likely first fight:** WiFi config on a headless Pi (no screen to type on).
-The fix is cloud-init/`network-config` on the SD card — we'll set it up before first boot.
+The fix is cloud-init/`network-config` on the SD card — set it up before first boot.
 
 ---
 
@@ -59,7 +57,7 @@ The fix is cloud-init/`network-config` on the SD card — we'll set it up before
 
 **Goal:** drivable rover via keyboard over SSH. No ROS2 anywhere — this phase is electronics + firmware only, on purpose.
 
-**New concepts (each explained when we hit it):**
+**New concepts:**
 - *Voltage/current/ground*, and why every board must share a ground
 - *PWM* — how you get "70% speed" out of a pin that can only be ON or OFF (switch it very fast)
 - *H-bridge* — the circuit trick that lets a motor run backwards (what the MDD3A does)
@@ -109,7 +107,7 @@ files* (start ten nodes with one command), *tf* (the live family tree of
 - [ ] ROS2 Jazzy on the Pi; `sllidar_ros2` driver publishing `/scan` — **see your room as a live point ring in Foxglove Studio on Windows** ← *the single most motivating moment of the whole project*
 - [ ] `serial_bridge` node: subscribes `/cmd_vel` (velocity commands) → serial to Pico; reads encoder counts ← Pico
 - [ ] Drive the rover with `teleop_twist_keyboard` — same driving as Phase 1, but now it's ROS2 messages doing it
-- [ ] `odometry` node: encoder ticks → wheel distances → *diff-drive kinematics* (one page of geometry we'll walk through slowly — ticks in, position-and-heading out) → publish `/odom` + the `odom → base_link` transform
+- [ ] `odometry` node: encoder ticks → wheel distances → *diff-drive kinematics* (one page of geometry: ticks in, position-and-heading out) → publish `/odom` + the `odom → base_link` transform
 - [ ] **Odometry sanity check:** drive 1 m forward with a tape measure down — does `/odom` say ~1 m? Rotate in place 360° — does heading come back to ~start?
 
 **Definition of done:** Foxglove shows the scan ring live, and the tape-measure odometry test passes within ~5%.
@@ -145,7 +143,7 @@ ahead of the robot's center).
 **Likely first fights (this phase is 50% debugging by design):** map builds
 rotated/mirrored (lidar mounted backwards → fix the static transform, not the
 hardware); "message filter dropping message" (timestamps/QoS mismatch — a rite
-of passage; we'll decode it together); map smears in the long hallway
+of passage; worth decoding line by line); map smears in the long hallway
 (drive slower, tune scan-matching, check odometry quality from Phase 2).
 
 **⛳ Success checkpoint reached.** Everything after this line is bonus.
@@ -173,7 +171,7 @@ mid-route gets avoided **(film this too)**.
 
 In order: (1) re-read the error message slowly — ROS2 errors usually *do* say
 what's wrong; (2) reduce to the last working state and re-add one thing;
-(3) bring me the exact error text + what you changed since it last worked;
+(3) write out the exact error text + what changed since it last worked;
 (4) 30 minutes of genuine stuckness = stop, log it, move to the other track —
 sleep fixes robots more often than seems reasonable.
 
