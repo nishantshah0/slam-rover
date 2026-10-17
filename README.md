@@ -1,12 +1,12 @@
-# SLAM Rover — Open-Source Design Package
+# SLAM Rover
 
-A complete, buildable design for a budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Published as a reference design — everything needed to build one lives in this repo.
+A budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Next up: pointing it at a real infrastructure problem ([see below](#infrastructure-use-case)).
 
 **What's here and how far it's been validated:**
 - **Firmware** (MicroPython, Pico W): motor control, PIO quadrature encoders, WiFi/USB command protocol with fail-safe watchdog — validated 9/9 in a [host-side simulation harness](pico/host_test/run_sim.py)
 - **CAD**: parametric chassis system — plate, motor clamps, and tolerance test coupon (Onshape); wheels, caster spacer, and body shell (OpenSCAD, sources included) — structural parts printed and dry-fitted on a Bambu P1S
 - **Engineering docs**: [decision log](docs/decisions.md) (D1–D9), [risk register](docs/risks.md) (R1–R10), [staged BOM](docs/shopping-list.md), [build roadmap](docs/roadmap.md), [debugging log](docs/debugging-log.md)
-- Hardware bring-up (motors/lidar/SLAM on the physical robot) is designed and documented but not yet executed — the [phase 1 guide](docs/phase1-guide.md) is the runbook for whoever does it first
+- Hardware bring-up (motors/lidar/SLAM on the physical robot) is the next step — the [phase 1 guide](docs/phase1-guide.md) is the runbook
 
 ## How it's made
 
@@ -16,6 +16,18 @@ A complete, buildable design for a budget (~$400 CAD) SLAM-capable autonomous ro
 4. **Add mapping after hardware bring-up.** The intended next layer is a Raspberry Pi 5 running Ubuntu 24.04 and ROS 2 Jazzy. It will bridge motor commands and encoder counts, publish wheel odometry, take lidar scans, and feed both into `slam_toolbox` ([roadmap](docs/roadmap.md)). The [physical bring-up guide](docs/phase1-guide.md) is here too, with the wiring, assembly, and first-test steps. The ROS 2 nodes and physical SLAM tests are still planned.
 
 The firmware's command handling and watchdog passed all 9 checks in the [host-side simulation harness](pico/host_test/run_sim.py). Encoder behavior, motor wiring, and the complete rover still need tests on the physical hardware.
+
+## Infrastructure use case
+
+A room map is the foundation; the goal is to make the map *answer a question about infrastructure*. The rover's strengths — small, cheap, lidar-mapped, and able to tag sensor readings to a position — point at places that are cramped, hazardous, or tedious for a person to survey. Candidate directions being evaluated:
+
+- **As-built vs. as-designed check** — map a finished room or construction site and overlay it on the floor plan to flag walls, columns, or openings that are out of place.
+- **Crawl-space and utility-tunnel inspection** — map spaces people don't want to crawl into, with photos and humidity/temperature readings pinned to map locations (leaks, moisture, mold risk).
+- **Sensor heatmaps on the map** — gas (MQ-series), temperature, humidity, or Wi-Fi signal strength logged per position, producing a map of *conditions*, not just walls.
+- **Culvert and large-pipe survey** — drive through drainage culverts and map blockages, debris, and cross-section changes.
+- **Post-incident building survey** — send the rover ahead into a damaged space to map what's passable before a person goes in.
+
+The chosen use case will add a Phase 5 to the build plan once it's locked in.
 
 ## Gallery
 
