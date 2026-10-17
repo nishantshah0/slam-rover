@@ -1,6 +1,6 @@
 # SLAM Rover
 
-A budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Next up: pointing it at a real infrastructure problem ([see below](#infrastructure-use-case)).
+A budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Next up: **Plumb**, a structural inspection mode for buildings ([see below](#whats-next-plumb)).
 
 **What's here and how far it's been validated:**
 - **Firmware** (MicroPython, Pico W): motor control, PIO quadrature encoders, WiFi/USB command protocol with fail-safe watchdog — validated 9/9 in a [host-side simulation harness](pico/host_test/run_sim.py)
@@ -17,22 +17,24 @@ A budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simu
 
 The firmware's command handling and watchdog passed all 9 checks in the [host-side simulation harness](pico/host_test/run_sim.py). Encoder behavior, motor wiring, and the complete rover still need tests on the physical hardware.
 
-## Infrastructure use case
+## What's next: Plumb
 
-**Leak hunting: the rover maps a basement or crawl space and marks where the water is.**
+**Plumb turns the rover into a structural inspector. It drives through a building and maps where the floors are sinking, sagging, or cracking.**
 
-Hidden leaks under houses (dripping pipes, a seeping foundation wall, a failing water heater) rot wood and grow mold for months before anyone notices, because nobody wants to crawl under there and look. An inspector checks a few spots by hand. The rover drives the whole space and hands back one picture: the lidar floor map with damp spots glowing on it.
+Buildings are infrastructure, and they fail quietly: foundations settle, floor slabs sag, cracks spread. Inspectors catch this by spot-checking a few places with a level and a tape measure. Plumb measures the whole floor and hands back a structural condition map instead of a handful of guesses.
 
-**How it works.** Water cools whatever it soaks as it evaporates, so a wet patch of wall or floor reads a few degrees colder than the dry surface around it. That's how thermal cameras find leaks.
+**What it measures (three layers on one map):**
 
-1. An **MLX90614 infrared thermometer** (~$15) points at the wall beside the rover and reads its surface temperature. An **SHT31** (~$10) reads air temperature and humidity. Both connect to the Pi over I2C, so the Pico firmware doesn't change.
-2. A `moisture_logger` ROS 2 node reads the sensors at 5 Hz and stamps each reading with the rover's position from the `map → base_link` transform slam_toolbox already publishes.
-3. Readings get binned into the same grid as the occupancy map. Any cell colder than the surrounding wall by more than a set threshold (start at 2 °C) gets flagged.
-4. Output: one PNG of the floor map with a cold-spot heatmap on top and the flagged spots circled. A Pi camera snapshot of each flagged spot is the stretch goal.
+1. **Floor slope (settlement).** An MPU6050 IMU on the Pi's I2C bus reads the rover's tilt. The rover pauses ~0.5 s at each grid point for a clean reading, and uneven settlement shows up as a slope gradient across the map.
+2. **Floor defects.** The same IMU picks up jolts as the wheels cross cracks, heaved joints, and spalled concrete. Each spike is pinned to the map position where it happened.
+3. **Geometry vs. plan.** The lidar map is overlaid on the building's floor plan to flag walls and openings that are out of place or out of square.
 
-**Demo.** Hide a wet towel and an ice pack against the walls of a room, drive one lap, and the map lights up in the right places. Then do it for real in a basement.
+**How it fits the existing stack:** a `plumb_logger` ROS 2 node reads the IMU, stamps each reading with the rover's pose from the `map → base_link` transform slam_toolbox already publishes, and bins readings into the occupancy-map grid. The output is the floor map with slope and defect layers on top. The only new hardware is a ~$5 IMU; the Pico firmware doesn't change.
 
-**Why this one:** it reuses everything the rover already does (map, position, Pi), adds about $25 of sensors, and ends with a result you can see at a glance.
+**How it gets tested:**
+- **Known slope:** plywood propped on books at 1–2°, checked against a phone level app.
+- **Known defects:** cables and pencils taped to the floor as fake cracks, at measured positions.
+- **Real run:** a garage or basement floor, spot-checked with a level.
 
 ## Gallery
 
@@ -86,8 +88,8 @@ slam_toolbox + tf tree (`map → odom → base_link → laser`). Debug coordinat
 ### Phase 4 (Stretch) — Autonomy
 Nav2 for point-to-point autonomous navigation. Prep item: closed-loop wheel velocity control (PID on the Pico) makes Nav2 behave much better than open-loop PWM.
 
-### Phase 5 — Leak hunting
-Mount the MLX90614 and SHT31 on the Pi's I2C bus, write the `moisture_logger` node, and render the cold-spot heatmap over the saved map ([use case above](#infrastructure-use-case)). Only needs Phase 3 (a working map), not Phase 4.
+### Phase 5 — Plumb (structural inspection)
+Mount the MPU6050, write the `plumb_logger` node, and render slope and defect layers over the saved map ([details above](#whats-next-plumb)). Only needs Phase 3 (a working map), not Phase 4.
 
 ## Repo Layout
 
