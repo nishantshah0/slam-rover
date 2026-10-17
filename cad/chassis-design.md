@@ -92,8 +92,9 @@ the real caster first.
 
 ## Print queue
 
-| When | What |
+| Status | What |
 |---|---|
-| Now ($0) | Test-fit coupon — ready for the day parts arrive |
-| After coupon passes | Plate + 2 clamps + caster spacer (~6 hr print, overnight) |
+| ✅ Printed | Test-fit coupon |
+| ✅ Printed, dry-fitted | Plate + 2 motor clamps + caster spacer (~6 hr print, overnight) |
+| ✅ Printed | Drive wheels + body shell |
 | Phase 2 | Lidar mast (bolts to the spare-hole grid) |
