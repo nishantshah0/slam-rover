@@ -19,15 +19,20 @@ The firmware's command handling and watchdog passed all 9 checks in the [host-si
 
 ## Infrastructure use case
 
-A room map is the foundation; the goal is to make the map *answer a question about infrastructure*. The rover's strengths — small, cheap, lidar-mapped, and able to tag sensor readings to a position — point at places that are cramped, hazardous, or tedious for a person to survey. Candidate directions being evaluated:
+**Leak hunting: the rover maps a basement or crawl space and marks where the water is.**
 
-- **As-built vs. as-designed check** — map a finished room or construction site and overlay it on the floor plan to flag walls, columns, or openings that are out of place.
-- **Crawl-space and utility-tunnel inspection** — map spaces people don't want to crawl into, with photos and humidity/temperature readings pinned to map locations (leaks, moisture, mold risk).
-- **Sensor heatmaps on the map** — gas (MQ-series), temperature, humidity, or Wi-Fi signal strength logged per position, producing a map of *conditions*, not just walls.
-- **Culvert and large-pipe survey** — drive through drainage culverts and map blockages, debris, and cross-section changes.
-- **Post-incident building survey** — send the rover ahead into a damaged space to map what's passable before a person goes in.
+Hidden leaks under houses (dripping pipes, a seeping foundation wall, a failing water heater) rot wood and grow mold for months before anyone notices, because nobody wants to crawl under there and look. An inspector checks a few spots by hand. The rover drives the whole space and hands back one picture: the lidar floor map with damp spots glowing on it.
 
-The chosen use case will add a Phase 5 to the build plan once it's locked in.
+**How it works.** Water cools whatever it soaks as it evaporates, so a wet patch of wall or floor reads a few degrees colder than the dry surface around it. That's how thermal cameras find leaks.
+
+1. An **MLX90614 infrared thermometer** (~$15) points at the wall beside the rover and reads its surface temperature. An **SHT31** (~$10) reads air temperature and humidity. Both connect to the Pi over I2C, so the Pico firmware doesn't change.
+2. A `moisture_logger` ROS 2 node reads the sensors at 5 Hz and stamps each reading with the rover's position from the `map → base_link` transform slam_toolbox already publishes.
+3. Readings get binned into the same grid as the occupancy map. Any cell colder than the surrounding wall by more than a set threshold (start at 2 °C) gets flagged.
+4. Output: one PNG of the floor map with a cold-spot heatmap on top and the flagged spots circled. A Pi camera snapshot of each flagged spot is the stretch goal.
+
+**Demo.** Hide a wet towel and an ice pack against the walls of a room, drive one lap, and the map lights up in the right places. Then do it for real in a basement.
+
+**Why this one:** it reuses everything the rover already does (map, position, Pi), adds about $25 of sensors, and ends with a result you can see at a glance.
 
 ## Gallery
 
@@ -80,6 +85,9 @@ slam_toolbox + tf tree (`map → odom → base_link → laser`). Debug coordinat
 
 ### Phase 4 (Stretch) — Autonomy
 Nav2 for point-to-point autonomous navigation. Prep item: closed-loop wheel velocity control (PID on the Pico) makes Nav2 behave much better than open-loop PWM.
+
+### Phase 5 — Leak hunting
+Mount the MLX90614 and SHT31 on the Pi's I2C bus, write the `moisture_logger` node, and render the cold-spot heatmap over the saved map ([use case above](#infrastructure-use-case)). Only needs Phase 3 (a working map), not Phase 4.
 
 ## Repo Layout
 

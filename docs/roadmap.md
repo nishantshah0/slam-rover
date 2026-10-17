@@ -167,6 +167,28 @@ mid-route gets avoided **(film this too)**.
 
 ---
 
+## Phase 5 — Leak hunting (the infrastructure use case)
+
+**Goal:** drive a basement or crawl space once and get back the floor map with the damp spots marked. Needs a working map from Phase 3; Nav2 (Phase 4) is optional.
+
+**New concepts:** *I2C* (two-wire bus for small sensors; the Pi talks to many sensors on the same two pins), *infrared surface temperature* (reading how warm a surface is from a distance), *evaporative cooling* (why a wet patch is colder than a dry one), *transform lookup* (asking tf "where was the robot when this reading was taken?").
+
+**Milestone ladder:**
+- [ ] MLX90614 + SHT31 wired to the Pi's I2C pins; `i2cdetect` shows both addresses
+- [ ] Bench test: point the MLX90614 at a dry wall, then at a damp cloth. The reading should drop a few °C.
+- [ ] Sensor bracket printed and mounted, the MLX90614 aimed sideways at wall height
+- [ ] `moisture_logger` node publishes readings stamped with the `map → base_link` pose
+- [ ] Readings binned into the occupancy-map grid; cells more than 2 °C colder than nearby wall cells get flagged
+- [ ] Heatmap PNG rendered over the saved map
+- [ ] **Staged test: wet towel + ice pack hidden in a room, one lap, both found** **(film this)**
+- [ ] Real run in a basement or crawl space
+
+**Definition of done:** the staged test finds both planted spots, and the heatmap from the real run is in the repo.
+
+**Likely first fights:** the sensor reads the floor or the ceiling instead of the wall (fix the mount angle); readings smear along the path because the sensor lags while driving (slow down, or offset each reading's timestamp); sun-warmed or furnace-warmed walls show up as fake hot and cold spots (compare each cell against nearby cells, not one global average).
+
+---
+
 ## When you're stuck
 
 In order: (1) re-read the error message slowly — ROS2 errors usually *do* say
@@ -181,4 +203,5 @@ sleep fixes robots more often than seems reasonable.
 - **Phase 2:** Foxglove screenshot of the live scan ring + the odometry tape-measure test
 - **Phase 3:** the saved map PNG + a timelapse of it building + your two best debugging-log war stories
 - **Phase 4:** click-to-drive video with an obstacle dodge
+- **Phase 5:** the leak heatmap from the staged test next to a photo of where the towel was hidden
 - **Throughout:** [debugging-log.md](debugging-log.md) *is* the answer to "tell me about a hard problem you solved" — with dates proving it happened.
