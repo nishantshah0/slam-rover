@@ -1,12 +1,40 @@
-# SLAM Rover — Open-Source Design Package
+# SLAM Rover
 
-A complete, buildable design for a budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Published as a reference design — everything needed to build one lives in this repo.
+A budget (~$400 CAD) SLAM-capable autonomous rover: 3D-printed chassis CAD, simulation-tested Pico W firmware, wiring plans, risk analysis, and a staged bill of materials. Next up: **Plumb**, a structural inspection mode for buildings ([see below](#whats-next-plumb)).
 
 **What's here and how far it's been validated:**
 - **Firmware** (MicroPython, Pico W): motor control, PIO quadrature encoders, WiFi/USB command protocol with fail-safe watchdog — validated 9/9 in a [host-side simulation harness](pico/host_test/run_sim.py)
 - **CAD**: parametric chassis system — plate, motor clamps, and tolerance test coupon (Onshape); wheels, caster spacer, and body shell (OpenSCAD, sources included) — structural parts printed and dry-fitted on a Bambu P1S
 - **Engineering docs**: [decision log](docs/decisions.md) (D1–D9), [risk register](docs/risks.md) (R1–R10), [staged BOM](docs/shopping-list.md), [build roadmap](docs/roadmap.md), [debugging log](docs/debugging-log.md)
-- Hardware bring-up (motors/lidar/SLAM on the physical robot) is designed and documented but not yet executed — the [phase 1 guide](docs/phase1-guide.md) is the runbook for whoever does it first
+- Hardware bring-up (motors/lidar/SLAM on the physical robot) is the next step — the [phase 1 guide](docs/phase1-guide.md) is the runbook
+
+## How it's made
+
+1. **Design and print the chassis.** The differential-drive layout puts two N20 motors beside a 160 × 120 mm plate, a caster at the rear, and the battery near the wheel axle. The plate, motor clamps, and fit coupon were modeled in Onshape; the [chassis design spec](cad/chassis-design.md) records the dimensions and layout choices. The [OpenSCAD sources](cad/) generate the wheels, caster spacer, and body shell. The structural parts have been printed and dry-fitted on a Bambu P1S; the STL files and previews are in `cad/`.
+2. **Control the wheels with a Pico W.** The planned wiring connects the Pico to an H-bridge motor driver and the two motor encoders ([pin map and bring-up order](docs/phase1-guide.md)). The existing [MicroPython firmware](pico/main.py) drives each motor with PWM, while [PIO encoder counting](pico/encoder.py) tracks wheel movement. It accepts `M <left> <right>` over USB serial or WiFi UDP and reports `E <left_count> <right_count>` at 20 Hz. If valid commands stop for 400 ms, it stops both motors.
+3. **Drive it from a computer.** The [WASD teleop script](teleop/teleop_wasd.py) mixes forward and turn inputs into left and right motor commands, then sends them 10 times a second over serial or UDP. That repeating command is the firmware watchdog's heartbeat.
+4. **Add mapping after hardware bring-up.** The intended next layer is a Raspberry Pi 5 running Ubuntu 24.04 and ROS 2 Jazzy. It will bridge motor commands and encoder counts, publish wheel odometry, take lidar scans, and feed both into `slam_toolbox` ([roadmap](docs/roadmap.md)). The [physical bring-up guide](docs/phase1-guide.md) is here too, with the wiring, assembly, and first-test steps. The ROS 2 nodes and physical SLAM tests are still planned.
+
+The firmware's command handling and watchdog passed all 9 checks in the [host-side simulation harness](pico/host_test/run_sim.py). Encoder behavior, motor wiring, and the complete rover still need tests on the physical hardware.
+
+## What's next: Plumb
+
+**Plumb turns the rover into a structural inspector. It drives through a building and maps where the floors are sinking, sagging, or cracking.**
+
+Buildings are infrastructure, and they fail quietly: foundations settle, floor slabs sag, cracks spread. Inspectors catch this by spot-checking a few places with a level and a tape measure. Plumb measures the whole floor and hands back a structural condition map instead of a handful of guesses.
+
+**What it measures (three layers on one map):**
+
+1. **Floor slope (settlement).** An MPU6050 IMU on the Pi's I2C bus reads the rover's tilt. The rover pauses ~0.5 s at each grid point for a clean reading, and uneven settlement shows up as a slope gradient across the map.
+2. **Floor defects.** The same IMU picks up jolts as the wheels cross cracks, heaved joints, and spalled concrete. Each spike is pinned to the map position where it happened.
+3. **Geometry vs. plan.** The lidar map is overlaid on the building's floor plan to flag walls and openings that are out of place or out of square.
+
+**How it fits the existing stack:** a `plumb_logger` ROS 2 node reads the IMU, stamps each reading with the rover's pose from the `map → base_link` transform slam_toolbox already publishes, and bins readings into the occupancy-map grid. The output is the floor map with slope and defect layers on top. The only new hardware is a ~$5 IMU; the Pico firmware doesn't change.
+
+**How it gets tested:**
+- **Known slope:** plywood propped on books at 1–2°, checked against a phone level app.
+- **Known defects:** cables and pencils taped to the floor as fake cracks, at measured positions.
+- **Real run:** a garage or basement floor, spot-checked with a level.
 
 ## Gallery
 
@@ -59,6 +87,9 @@ slam_toolbox + tf tree (`map → odom → base_link → laser`). Debug coordinat
 
 ### Phase 4 (Stretch) — Autonomy
 Nav2 for point-to-point autonomous navigation. Prep item: closed-loop wheel velocity control (PID on the Pico) makes Nav2 behave much better than open-loop PWM.
+
+### Phase 5 — Plumb (structural inspection)
+Mount the MPU6050, write the `plumb_logger` node, and render slope and defect layers over the saved map ([details above](#whats-next-plumb)). Only needs Phase 3 (a working map), not Phase 4.
 
 ## Repo Layout
 
