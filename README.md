@@ -1,24 +1,40 @@
 # SLAM Rover
 
-A ~$400 CAD autonomous rover that maps buildings with lidar SLAM, built toward **[Plumb](#whats-next-plumb)**: structural inspection that maps where floors are sinking, sagging, or cracking. Custom 3D-printed chassis, custom Pico W firmware, Raspberry Pi 5 + ROS 2 Jazzy.
+A ~$400 CAD rover designed to map buildings with lidar SLAM, built toward **[Plumb](#whats-next-plumb)**: structural inspection that maps where floors are sinking, sagging, or cracking. Custom 3D-printed chassis, custom Pico W firmware, Raspberry Pi 5 + ROS 2 Jazzy.
 
-## Progress
+## Where it stands
 
-- ✅ **Chassis**: parametric plate, motor clamps, and fit coupon (Onshape); wheels, caster spacer, and body shell (OpenSCAD). Printed and dry-fitted on a Bambu P1S.
-- ✅ **Firmware** (MicroPython, Pico W): PWM motor control, PIO quadrature encoder counting, USB/WiFi command protocol, fail-safe watchdog. Passes 9/9 checks in a [host-side test harness](pico/host_test/run_sim.py).
-- ✅ **Teleop**: WASD driving over WiFi or USB.
-- ✅ **ROS 2 Jazzy** dev environment.
-- ✅ **Engineering docs**: [decision log](docs/decisions.md) (D1–D9), [risk register](docs/risks.md) (R1–R10), [staged BOM](docs/shopping-list.md), [roadmap](docs/roadmap.md).
-- 🔜 Electronics bring-up: motors, encoders, power ([runbook](docs/phase1-guide.md))
-- ⬜ Lidar + wheel odometry → SLAM map
-- ⬜ Plumb
+**Done:** the design, the printed chassis, and firmware tested in simulation. **Not done yet:** the electronics haven't been wired, so the rover hasn't driven or made a map. Hardware bring-up is the next step ([runbook](docs/phase1-guide.md)).
+
+### Completed
+
+- ✅ **Planned before buying anything.** Nine design decisions with rationale ([D1–D9](docs/decisions.md)), ten known failure modes with mitigations ([R1–R10](docs/risks.md)), and a parts list split into [three purchases](docs/shopping-list.md), each bought only after the previous stage works, so a wrong part costs one stage instead of the whole budget.
+- ✅ **Survived a part shortage on paper.** The first-choice motor driver (Cytron MDD3A) sold out on Amazon.ca and RobotShop. Because decision D6 recorded *why* it was chosen, the replacement (SparkFun TB6612FNG) was picked the same afternoon. Tying its STBY/PWMA/PWMB pins high makes it behave like the MDD3A, so the firmware didn't change ([D6](docs/decisions.md)).
+- ✅ **Designed and printed the chassis.** 160 × 120 mm diff-drive plate, N20 motor clamps, and a tolerance test coupon in Onshape; drive wheels, caster spacer, and body shell in OpenSCAD (sources included). Printed and dry-fitted on a Bambu P1S ([gallery](#gallery)).
+- ✅ **Wrote the Pico W firmware and tested it in simulation.** PWM motor control, PIO quadrature encoder counting, USB serial + WiFi UDP command protocol, and a fail-safe watchdog. A [host-side harness](pico/host_test/run_sim.py) fakes the Pico hardware around a virtual clock and runs the real `main.py`. It passes 9/9 checks:
+  - boots with motors stopped
+  - `M 60 60` sets both motors to the expected PWM duty
+  - a 10 Hz command stream keeps the motors running
+  - out-of-range speeds clamp to ±100, and reverse uses the reverse pin
+  - **when commands stop (laptop dies, WiFi drops), the watchdog stops both motors within ~400 ms**
+  - encoder telemetry streams at ~20 Hz
+  - garbage input is ignored and doesn't keep the motors alive
+  - firmware falls back cleanly when PIO isn't available, and announces when it's ready
+- ✅ **Teleop client.** WASD driving over WiFi or USB, sending the 10 Hz heartbeat the watchdog expects.
+- ✅ **ROS 2 Jazzy dev environment** set up in WSL2 (talker/listener verified).
+
+### Not yet done
+
+- 🔜 **Electronics bring-up:** wire the motors, driver, encoders, and power; confirm encoder counts and the watchdog on real hardware ([runbook](docs/phase1-guide.md)). The simulation can't test the PIO encoder code, so that gets verified here first.
+- ⬜ **Mapping:** lidar + wheel odometry into slam_toolbox, then a saved map of a room.
+- ⬜ **Plumb:** the structural inspection layer ([below](#whats-next-plumb)).
 
 ## How it's made
 
 1. **Design and print the chassis.** The differential-drive layout puts two N20 motors beside a 160 × 120 mm plate, a caster at the rear, and the battery near the wheel axle. The plate, motor clamps, and fit coupon were modeled in Onshape; the [chassis design spec](cad/chassis-design.md) records the dimensions and layout choices. The [OpenSCAD sources](cad/) generate the wheels, caster spacer, and body shell. The structural parts have been printed and dry-fitted on a Bambu P1S; the STL files and previews are in `cad/`.
 2. **Control the wheels with a Pico W.** The wiring connects the Pico to an H-bridge motor driver and the two motor encoders ([pin map and bring-up order](docs/phase1-guide.md)). The [MicroPython firmware](pico/main.py) drives each motor with PWM, while [PIO encoder counting](pico/encoder.py) tracks wheel movement. It accepts `M <left> <right>` over USB serial or WiFi UDP and reports `E <left_count> <right_count>` at 20 Hz. If valid commands stop for 400 ms, it stops both motors.
 3. **Drive it from a computer.** The [WASD teleop script](teleop/teleop_wasd.py) mixes forward and turn inputs into left and right motor commands, then sends them 10 times a second over serial or UDP. That repeating command is the firmware watchdog's heartbeat.
-4. **Map the room.** A Raspberry Pi 5 running Ubuntu 24.04 and ROS 2 Jazzy bridges motor commands and encoder counts, publishes wheel odometry, takes lidar scans, and feeds both into `slam_toolbox` ([roadmap](docs/roadmap.md)).
+4. **Map the room (next).** A Raspberry Pi 5 running Ubuntu 24.04 and ROS 2 Jazzy will bridge motor commands and encoder counts, publish wheel odometry, take lidar scans, and feed both into `slam_toolbox` ([roadmap](docs/roadmap.md)).
 
 ## What's next: Plumb
 
