@@ -4,7 +4,7 @@ A ~$400 CAD rover designed to map buildings with lidar SLAM, built toward **[Plu
 
 ## Where it stands
 
-**Done:** the design, the printed chassis, and firmware tested in simulation. **Not done yet:** the electronics haven't been wired, so the rover hasn't driven or made a map. Hardware bring-up is the next step ([runbook](docs/phase1-guide.md)).
+**Done:** the design, the printed chassis, firmware tested in simulation, and the electronics wired. **Next:** on-hardware testing and driving, then lidar mapping ([runbook](docs/phase1-guide.md)).
 
 ### Completed
 
@@ -23,9 +23,11 @@ A ~$400 CAD rover designed to map buildings with lidar SLAM, built toward **[Plu
 - ✅ **Teleop client.** WASD driving over WiFi or USB, sending the 10 Hz heartbeat the watchdog expects.
 - ✅ **ROS 2 Jazzy dev environment** set up in WSL2 (talker/listener verified).
 
-### Not yet done
+- ✅ **Electronics wired:** motors, TB6612 driver, encoders, and the two-rail power system (battery → driver, battery → buck → Pi), per the [pin map](docs/phase1-guide.md).
 
-- 🔜 **Electronics bring-up:** wire the motors, driver, encoders, and power; confirm encoder counts and the watchdog on real hardware ([runbook](docs/phase1-guide.md)). The simulation can't test the PIO encoder code, so that gets verified here first.
+### Next
+
+- 🔜 **On-hardware testing:** confirm encoder counts with a hand-spin test, run the watchdog unplug test on the real rover, then WASD driving ([runbook](docs/phase1-guide.md)). The simulation can't test the PIO encoder code, so that gets verified here first.
 - ⬜ **Mapping:** lidar + wheel odometry into slam_toolbox, then a saved map of a room.
 - ⬜ **Plumb:** the structural inspection layer ([below](#whats-next-plumb)).
 
